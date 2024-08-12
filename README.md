@@ -16,4 +16,4 @@ I have a bunch of plans for the future of my neural net libaray which you can se
 
 
 > [!NOTE]
-> While you could theoretically use matrices as simple 2D arrays, this library is designed with math in mind and you can't really do math with things other than numbers in code. So, my library does not have express support for any other datatypes.
+> While you could theoretically use matrices as simple 2D arrays, this library is designed with math in mind and you can't really do math with things other than numbers in code. So, my library does not have express support for any non-numerical datatypes.
