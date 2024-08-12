@@ -29,15 +29,27 @@ public class Matrix {
 
     public static void main(String[] args) {
         
-        double[][] data = {
-            {1, 2, 3},
-            {4, 5, 6},
-            {7, 8, 9}
+        double[][] data1 = {
+            {1, 2, 1},
+            {0, 1, 0},
+            {2, 3, 4}
+        };
+
+        double[][] data2 = {
+            {2, 5},
+            {6, 7},
+            {1, 8}
         };
 
         // Making a new Matrix and printing it out
-        Matrix mat = new Matrix(data);
-        mat.print();
+        Matrix one = new Matrix(data1);
+        Matrix two = new Matrix(data2);
+        System.out.println("One:");
+        one.print();
+        System.out.println("Two:");
+        two.print();
+        System.out.println("Mult:");
+        Matrix.matrixMult(one, two).print();
         
 
 
@@ -95,6 +107,21 @@ public class Matrix {
 
     }
 
+    // The copy constructor
+    public Matrix(Matrix toCopy) {
+
+        // All we really need to do is just take out the data and put it into a different constructor
+        // It just makes it easier for the end user
+        Matrix(toCopy.data);
+
+    }
+
+    // The empty constructor
+    public Matrix() {
+        this.cols = 0;
+        this.rows = 0;
+        this.data = null;
+    }
 
     // Now for the methods ---------------------------
 
@@ -169,7 +196,7 @@ public class Matrix {
     }
 
     // The static scalar element multiplication method 
-    public static Matrix elementMultiplication(Matrix mat, double scalar) {
+    public static Matrix elementMult(Matrix mat, double scalar) {
 
         // Looping for every value in the matrix to multiply by the scalar
         for (int rowNum = 0; rowNum < mat.rows; rowNum++) {
@@ -188,12 +215,21 @@ public class Matrix {
     }
 
     // The element wise multiplication method 
-    public Matrix elementMultiplication(Matrix other) {
+    public Matrix elementMult(Matrix other) {
 
         // Making sure that they have the same dimensions
         if (this.rows != other.rows || this.cols != other.cols) {
 
+            // Telling them a bit about the error that just occurred
             System.out.println("In element-wise multiplication, both matrices have to have the same dimensions.");
+
+            // Printing out the matrices so that they know a bit more about what went wrong
+            System.out.println("Matrix A:");
+            this.print();
+            System.out.println("\nMatrix B:");
+            other.print();
+
+            // Throwing an error to stop the program
             throw new Error("ElementMultiplicationSizeError");
 
         }
@@ -215,30 +251,158 @@ public class Matrix {
     }
 
     // The static element wise multiplication method
-    public Matrix elementMultiplication(Matrix other) {
+    public static Matrix elementMult(Matrix one, Matrix two) {
 
         // Making sure that they have the same dimensions
-        if (this.rows != other.rows || this.cols != other.cols) {
+        if (one.rows != two.rows || one.cols != two.cols) {
 
+            // Telling them a bit about the error that just occurred
             System.out.println("In element-wise multiplication, both matrices have to have the same dimensions.");
-            throw new Error("ElementMultiplicationSizeError");
+
+            // Printing out the matrices so that they know a bit more about what went wrong
+            System.out.println("Matrix A:");
+            one.print();
+            System.out.println("\nMatrix B:");
+            two.print();
+
+            // Throwing an error to stop the program
+            throw new Error("StaticElementMultiplicationSizeError");
 
         }
 
+        // This is a static method so we need a new Matrix to return 
+        Matrix newMat = new Matrix(one);
+
         // Looping for every value in the matrix to multiply by the scalar
-        for (int rowNum = 0; rowNum < this.rows; rowNum++) {
+        for (int rowNum = 0; rowNum < one.rows; rowNum++) {
 
-            for (int colNum = 0; colNum < this.cols; colNum++) {
+            for (int colNum = 0; colNum < one.cols; colNum++) {
 
-                this.data[rowNum][colNum] *= other.data[rowNum][colNum];
+                newMat.data[rowNum][colNum] *= other.data[rowNum][colNum];
 
             }
 
         }
 
         // This is not a static method, so it changes itself and returns self
+        return newMat;
+
+    }
+
+    // The matrix multiplication method
+    public Matrix matrixMult(Matrix other) {
+
+        // First thing we have to do is check the sizes
+        if (other.rows != this.cols) {
+
+            System.out.println("The number of columns in the first matrix must match the number of rows in the second matrix in matrix multiplication.");
+
+            // Giving them a bit of data
+            System.out.println("Matrix A:");
+            this.print();
+            System.out.println("\nMatrix B:");
+            other.print();
+
+            // Throwing an error to stop their program
+            throw new Error("MatrixMultiplicationSizeError");
+
+        }
+
+        // We need to actually make a new matrix to return because it will be a different size
+        // We are doing this a strange way to avoid an unneeded loop in the constructor that would randomize it
+        Matrix newMat = new Matrix();
+        newMat.rows = this.rows;
+        newMat.cols = other.cols;
+        newMat.data = new double[this.rows][other.cols];
+
+        // Now for the math
+        // Looping for every value in the matrix 
+        for (int rowNum = 0; rowNum < newMat.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < newMat.cols; colNum++) {
+
+                // Now that we will be at every spot in the Matrix, we need to find the multiplicative sum 
+                // So we can loop through the shared dimension
+                double sum = 0.0;
+                for (int i = 0; i < this.cols; i++) {
+
+                    sum += this.data[rowNum][i] * other.data[i][colNum];
+
+                }
+
+                // Now we just need to assign this value to the new matrix
+                newMat.data[rowNum][colNum] = sum;
+
+            }
+
+        }
+
+        // Reassigning self
+        this.data = newMat.data;
+        this.rows = newMat.rows;
+        this.cols = newMat.cols;
+
+        // Returning what we got 
         return this;
 
     }
 
-}
+    // The static matrix multiplication method
+    public static Matrix matrixMult(Matrix one, Matrix two) {
+        
+        // First thing we have to do is check the sizes
+        if (two.rows != one.cols) {
+
+            System.out.println("The number of columns in the first matrix must match the number of rows in the second matrix in matrix multiplication.");
+
+            // Giving them a bit of data
+            System.out.println("Matrix A:");
+            one.print();
+            System.out.println("\nMatrix B:");
+            two.print();
+
+            // Throwing an error to stop their program
+            throw new Error("StaticMatrixMultiplicationSizeError");
+
+        }
+
+        // We need to actually make a new matrix to return because it will be a different size
+        // We are doing this a strange way to avoid an unneeded loop in the constructor that would randomize it
+        Matrix newMat = new Matrix();
+        newMat.rows = one.rows;
+        newMat.cols = two.cols;
+        newMat.data = new double[one.rows][two.cols];
+
+        // Now for the math
+        // Looping for every value in the matrix 
+        for (int rowNum = 0; rowNum < newMat.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < newMat.cols; colNum++) {
+
+                // Now that we will be at every spot in the Matrix, we need to find the multiplicative sum 
+                // So we can loop through the shared dimension
+                double sum = 0.0;
+                for (int i = 0; i < one.cols; i++) {
+
+                    sum += one.data[rowNum][i] * two.data[i][colNum];
+
+                }
+
+                // Now we just need to assign this value to the new matrix
+                newMat.data[rowNum][colNum] = sum;
+
+            }
+
+        }
+
+        // Reassigning self
+        one.data = newMat.data;
+        one.rows = newMat.rows;
+        one.cols = newMat.cols;
+
+        // Returning what we got 
+        return one;
+
+    }
+
+}   
