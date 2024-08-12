@@ -13,3 +13,7 @@ In addition, I have some friends in high school who are just learning Java right
 I have a bunch of plans for the future of my neural net libaray which you can see there, but here are a few more localized to these Matrix classes.
 - [ ] Add optional threading.
 - [ ] Add smart threading \(Check for large matrices and thread whenever they get larger than a certain size)
+
+
+> [!NOTE]
+> While you could theoretically use matrices as simple 2D arrays, this library is designed with math in mind and you can't really do math with things other than numbers in code. So, my library does not have express support for any other datatypes.
