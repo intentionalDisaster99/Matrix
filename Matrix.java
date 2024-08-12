@@ -50,6 +50,8 @@ public class Matrix {
         two.print();
         System.out.println("Mult:");
         Matrix.matrixMult(one, two).print();
+        System.out.println("Add:");
+        two.add(new Matrix(data2)).transpose().print();
         
 
 
@@ -123,7 +125,7 @@ public class Matrix {
         this.data = null;
     }
 
-    // Now for the methods ---------------------------
+    // Now for the methods ---------------------------------------------------------
 
     // A simple print function (not too fancy unfortunately)
     public void print() {
@@ -146,7 +148,7 @@ public class Matrix {
 
                     // It is smaller so we need to append spaces to the end to make it the same size
                     while (str.length() < MAX_DIGITS) {
-                        str += " ";
+                        str = " " + str;
                     }
 
                 }
@@ -172,6 +174,8 @@ public class Matrix {
         }
 
     }
+
+    //--------------------------------------------------Multiplication---------------------------------------------------------------
 
     // The scalar element multiplication method
     public Matrix elementMultiplication(double scalar) {
@@ -405,4 +409,164 @@ public class Matrix {
 
     }
 
+    //--------------------------------------------------Addition---------------------------------------------------------------
+
+    // The scalar addition method
+    public Matrix add(double scalar) {
+
+        // This specific element addition method is going to be the scalar one, but there will also be 
+        // one for Matrices that are the same size 
+
+        // Looping for every value in the matrix to add by the scalar
+        for (int rowNum = 0; rowNum < this.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < this.cols; colNum++) {
+
+                this.data[rowNum][colNum] += scalar;
+
+            }
+
+        }
+
+        // This is not a static method, so it changes itself and returns self
+        return this;
+
+    }
+
+    // The static scalar addition method
+    public static Matrix add(Matrix mat, double scalar) {
+
+        // This specific element addition method is going to be the scalar one, but there will also be 
+        // one for Matrices that are the same size 
+
+        // The Matrix that we are going to return (again the empty matrix in an attempt to skip some calculations)
+        Matrix newMat = new Matrix();
+
+        // Setting the dimensions of the new matrix
+        newMat.rows = mat.rows;
+        newMat.cols = mat.cols;
+
+        // Looping for every value in the matrix to add by the scalar
+        for (int rowNum = 0; rowNum < mat.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < mat.cols; colNum++) {
+
+                newMat.data[rowNum][colNum] = mat.data[rowNum][colNum] + scalar;
+
+            }
+
+        }
+
+        // This is a static method so no return self
+        return newMat;
+
+    }
+
+    // The matrix addition method
+    public Matrix add(Matrix other) {
+
+        // Checking to make sure that they are the same size 
+        if (this.rows != other.rows || this.cols != other.cols) {
+
+            System.out.println("The matrices in matrix addition must have the same dimensions.");
+
+            // Giving them a bit of data
+            System.out.println("Matrix A:");
+            this.print();
+            System.out.println("\nMatrix B:");
+            other.print();
+
+            // Throwing an error to stop their program
+            throw new Error("MatrixAdditionSizeError");
+
+        }
+
+        // Looping for every value in the matrix to add by the corresponding value
+        for (int rowNum = 0; rowNum < this.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < this.cols; colNum++) {
+
+                this.data[rowNum][colNum] += other.data[rowNum][colNum];
+
+            }
+
+        }
+
+        // Returning self
+        return this;
+
+    }
+
+    // The static matrix addition method
+    public Matrix add(Matrix one, Matrix two) {
+
+        // Checking to make sure that they are the same size 
+        if (one.rows != two.rows || one.cols != two.cols) {
+
+            System.out.println("The matrices in matrix addition must have the same dimensions.");
+
+            // Giving them a bit of data
+            System.out.println("Matrix A:");
+            one.print();
+            System.out.println("\nMatrix B:");
+            two.print();
+
+            // Throwing an error to stop their program
+            throw new Error("StaticMatrixAdditionSizeError");
+
+        }
+
+        // Making a new matrix to return
+        Matrix newMat = new Matrix();
+        newMat.rows = one.rows;
+        newMat.cols = one.cols;
+        newMat.data = new double[one.rows][one.cols];
+
+        // Looping for every value in the matrix to add by the corresponding value
+        for (int rowNum = 0; rowNum < one.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < one.cols; colNum++) {
+
+                newMat.data[rowNum][colNum] = one.data[rowNum][colNum] + two.data[rowNum][colNum];
+
+            }
+
+        }
+
+        // Returning the new matrix
+        return newMat;
+
+    }
+
+    // ----------------------------------------------Misc--------------------------------------------------------------------
+    
+    // The transposition method
+    public Matrix transpose() {
+
+        // The new matrix that we are returning
+        Matrix newMat = new Matrix();
+        newMat.cols = this.rows;
+        newMat.rows = this.cols;
+        newMat.data = new double[this.cols][this.rows];
+
+        // Looping for every value in the matrix to move it to the new location
+        for (int rowNum = 0; rowNum < this.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < this.cols; colNum++) {
+
+                newMat.data[colNum][rowNum] = this.data[rowNum][colNum];
+
+            }
+
+        }
+
+        // Setting this to have the new data
+        this.data = newMat.data;
+        this.cols = newMat.cols;
+        this.rows = newMat.rows;
+
+        // Returning self;
+        return this;
+
+    }
 }   
