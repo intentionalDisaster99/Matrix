@@ -569,4 +569,66 @@ public class Matrix {
         return this;
 
     }
-}   
+
+    // The static transposition method
+    public static Matrix transpose(Matrix mat) {
+
+        // The new matrix that we are returning
+        Matrix newMat = new Matrix();
+        newMat.cols = mat.rows;
+        newMat.rows = mat.cols;
+        newMat.data = new double[mat.cols][mat.rows];
+
+        // Looping for every value in the matrix to move it to the new location
+        for (int rowNum = 0; rowNum < mat.rows; rowNum++) {
+
+            for (int colNum = 0; colNum < mat.cols; colNum++) {
+
+                newMat.data[colNum][rowNum] = mat.data[rowNum][colNum];
+
+            }
+
+        }
+
+        // Returning self;
+        return mat;
+
+    }
+
+    // The toArray method that returns a copy of the data
+    public double[][] toArray() {
+
+        // The array that we are going to return
+        double[][] arr = new double[this.rows][this.cols];
+
+        // Running a deep copy 
+        for (int i = 0; i < this.rows; i++) {
+
+            arr[i] = Arrays.copyOf(this.data[i], this.data[i].length);
+
+        }
+
+        // Returning
+        return arr;
+
+    }
+
+    // The static toArray method
+    public static double[][] toArray(Matrix mat) {
+
+        // The array that we are going to return
+        double[][] arr = new double[mat.rows][mat.cols];
+
+        // Running a deep copy 
+        for (int i = 0; i < mat.rows; i++) {
+
+            arr[i] = Arrays.copyOf(mat.data[i], mat.data[i].length);
+
+        }
+
+        // Returning
+        return arr;
+
+    }
+    
+} 
