@@ -30,9 +30,9 @@ public class Matrix {
     public static void main(String[] args) {
         
         double[][] data1 = {
-            {1, 2, 1},
-            {0, 1, 0},
-            {2, 3, 4}
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
         };
 
         double[][] data2 = {
@@ -41,20 +41,10 @@ public class Matrix {
             {1, 8}
         };
 
-        // Making a new Matrix and printing it out
-        Matrix one = new Matrix(data1);
-        Matrix two = new Matrix(data2);
-        System.out.println("One:");
-        one.print();
-        System.out.println("Two:");
-        two.print();
-        System.out.println("Mult:");
-        Matrix.matrixMult(one, two).print();
-        System.out.println("Add:");
-        two.add(new Matrix(data2)).transpose().print();
-        
 
-
+        Matrix mat = new Matrix(data1);
+        activationFunction sigmoid = x -> 1 / (1 + Math.exp(-x));
+        mat.map(sigmoid).print();
     }
 
     // PIVs ------------------------------------------
@@ -104,6 +94,25 @@ public class Matrix {
         for (int i = 0; i < this.rows; i++) {
 
             this.data[i] = Arrays.copyOf(inputData[i], inputData[i].length);
+
+        }
+
+    }
+
+    // Another non random constructor for vectors
+    public Matrix(double[] inputData) {
+
+        // Setting the dimensions
+        this.rows = inputData.length;
+        this.cols = 1;
+
+        // Declaring the data variable
+        this.data = new double[this.rows][this.cols];
+
+        // Running a deep copy so that we can make sure there aren't any reference errors
+        for (int i = 0; i < this.rows; i++) {
+
+            this.data[i][0] = inputData[i];
 
         }
 
@@ -707,4 +716,50 @@ public class Matrix {
 
     }
     
+    // The mapping function 
+    public Matrix map(activationFunction func) {
+
+        // We want to loop through the Matrix now and run each element through the function
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < this.cols; col++) {
+
+                this.data[row][col] = func.run(this.data[row][col]);
+
+            }
+        }
+
+        // Returning self
+        return this;
+
+    }
+
+    // The static mapping function
+    public static Matrix map(Matrix mat, activationFunction func) {
+
+        // Making a new matrix that we will edit and return
+        Matrix newMat = new Matrix();
+        newMat.rows = mat.rows;
+        newMat.cols = mat.cols;
+
+        // We want to loop through the Matrix now and run each element through the function
+        for (int row = 0; row < newMat.rows; row++) {
+            for (int col = 0; col < newMat.cols; col++) {
+
+                newMat.data[row][col] = func.run(mat.data[row][col]);
+
+            }
+        }
+
+        // Returning the new matrix
+        return newMat;
+
+    }
+
+    // This is just a blank interface so that you can create a lambda expression to pass in to the mapping function
+    interface activationFunction {
+        double run(double x);
+    }
+
 } 
+
+
