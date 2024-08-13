@@ -1,4 +1,4 @@
-package Matrix;
+package MatrixLibrary;
 
 import java.util.Arrays;
 
@@ -112,9 +112,22 @@ public class Matrix {
     // The copy constructor
     public Matrix(Matrix toCopy) {
 
-        // All we really need to do is just take out the data and put it into a different constructor
-        // It just makes it easier for the end user
-        Matrix(toCopy.data);
+        // All we really need to do is just the same thing as in another constructor
+        // Having two just makes it easier for the end user
+
+        // Setting the dimensions
+        this.rows = toCopy.data.length;
+        this.cols = toCopy.data[0].length;
+
+        // Declaring the data variable
+        this.data = new double[this.rows][this.cols];
+
+        // Running a deep copy so that we can make sure there aren't any reference errors
+        for (int i = 0; i < this.rows; i++) {
+
+            this.data[i] = Arrays.copyOf(toCopy.data[i], toCopy.data[i].length);
+
+        }
 
     }
 
@@ -178,7 +191,7 @@ public class Matrix {
     //--------------------------------------------------Multiplication---------------------------------------------------------------
 
     // The scalar element multiplication method
-    public Matrix elementMultiplication(double scalar) {
+    public Matrix elementMult(double scalar) {
 
         // This specific element multiplication method is going to be the scalar one, but there will also be 
         // one for Matrices that are the same size 
@@ -282,7 +295,7 @@ public class Matrix {
 
             for (int colNum = 0; colNum < one.cols; colNum++) {
 
-                newMat.data[rowNum][colNum] *= other.data[rowNum][colNum];
+                newMat.data[rowNum][colNum] *= two.data[rowNum][colNum];
 
             }
 
@@ -628,6 +641,69 @@ public class Matrix {
 
         // Returning
         return arr;
+
+    }
+
+    // A soft max function that normalizes the Matrix to percentage values less than one
+    public Matrix softMax() {
+
+        // First we need to find the sum of the every element when e is raised to their power (weird, I know)
+        double sum = 0;
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < this.cols; col++) {
+
+                // Math :)
+                sum += Math.exp(this.data[row][col]);
+
+            }
+        }
+
+        // Now we can replace every element with e raised to the element over the sum. Simple
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < this.cols; col++) {
+
+                // Math :)
+                this.data[row][col] = Math.exp(this.data[row][col]) / sum;
+
+            }
+        }
+        
+        // Returning self
+        return this;
+
+    }
+
+    // The static soft max function
+    public static Matrix softMax(Matrix mat) {
+
+        // First we need to find the sum of the every element when e is raised to their power (weird, I know)
+        double sum = 0;
+        for (int row = 0; row < mat.rows; row++) {
+            for (int col = 0; col < mat.cols; col++) {
+
+                // Math :)
+                sum += Math.exp(mat.data[row][col]);
+
+            }
+        }
+
+        // The new matrix that we will be editing and returning
+        Matrix newMat = new Matrix();
+        newMat.rows = mat.rows;
+        newMat.cols = mat.cols;
+
+        // Now we can replace every element with e raised to the element over the sum. Simple
+        for (int row = 0; row < mat.rows; row++) {
+            for (int col = 0; col < mat.cols; col++) {
+
+                // Math :)
+                newMat.data[row][col] = Math.exp(mat.data[row][col]) / sum;
+
+            }
+        }
+        
+        // Returning the edited one
+        return newMat;
 
     }
     

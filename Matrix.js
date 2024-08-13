@@ -670,5 +670,62 @@ class Matrix {
         return newMat;
     }
 
+    // This one is going to be a simple soft max function 
+    // What it does is normalize all of the data inside the Matrix to be percentages    
+    softMax() {
+
+        // First, we need to find the sum of e raised to all of the elements
+        let sum = 0;
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+
+                sum += Math.exp(this.data[row][col]);
+
+            }
+        }
+
+        // Now we need to replace each element with e raised to the element divided by the sum
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+
+                this.data[row][col] = Math.exp(this.data[row][col]) / sum;
+
+            }
+        }
+
+        // Returning self
+        return this;
+
+    }
+
+    // The static version of the soft max
+    static softMax(mat) {
+
+        // First, we need to find the sum of e raised to all of the elements
+        let sum = 0;
+        for (let row = 0; row < mat.rows; row++) {
+            for (let col = 0; col < mat.cols; col++) {
+
+                sum += Math.exp(mat.data[row][col]);
+
+            }
+        }
+
+        // The new matrix that we want to return
+        let newMat = new Matrix(mat.rows, mat.cols);
+
+        // Now we need to replace each element with e raised to the element divided by the sum
+        for (let row = 0; row < mat.rows; row++) {
+            for (let col = 0; col < mat.cols; col++) {
+
+                newMat.data[row][col] = Math.exp(mat.data[row][col]) / sum;
+
+            }
+        }
+
+        // Returning the new matrix
+        return newMat;
+
+    }
 
 }   
