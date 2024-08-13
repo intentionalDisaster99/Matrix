@@ -112,9 +112,22 @@ public class Matrix {
     // The copy constructor
     public Matrix(Matrix toCopy) {
 
-        // All we really need to do is just take out the data and put it into a different constructor
-        // It just makes it easier for the end user
-        Matrix(toCopy.data);
+        // All we really need to do is just the same thing as in another constructor
+        // Having two just makes it easier for the end user
+
+        // Setting the dimensions
+        this.rows = toCopy.data.length;
+        this.cols = toCopy.data[0].length;
+
+        // Declaring the data variable
+        this.data = new double[this.rows][this.cols];
+
+        // Running a deep copy so that we can make sure there aren't any reference errors
+        for (int i = 0; i < this.rows; i++) {
+
+            this.data[i] = Arrays.copyOf(toCopy.data[i], toCopy.data[i].length);
+
+        }
 
     }
 
@@ -282,7 +295,7 @@ public class Matrix {
 
             for (int colNum = 0; colNum < one.cols; colNum++) {
 
-                newMat.data[rowNum][colNum] *= other.data[rowNum][colNum];
+                newMat.data[rowNum][colNum] *= two.data[rowNum][colNum];
 
             }
 
