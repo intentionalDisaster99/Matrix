@@ -35,16 +35,16 @@ public class Matrix {
             {7, 8, 9}
         };
 
-        double[][] data2 = {
-            {2, 5},
-            {6, 7},
-            {1, 8}
+        double[] data2 = {
+            1, 2, 3, 4, 5
         };
 
 
-        Matrix mat = new Matrix(data1);
-        activationFunction sigmoid = x -> 1 / (1 + Math.exp(-x));
-        mat.map(sigmoid).print();
+        Matrix mat = new Matrix(data2);
+        Matrix mat1 = new Matrix(mat.toVector());
+        mat1.print();
+        // activationFunction sigmoid = x -> 1 / (1 + Math.exp(-x));
+        // mat.map(sigmoid).print();
     }
 
     // PIVs ------------------------------------------
@@ -150,7 +150,7 @@ public class Matrix {
     // Now for the methods ---------------------------------------------------------
 
     // A simple print function (not too fancy unfortunately)
-    public void print() {
+    public Matrix print() {
 
         // The maximum number of digits
         final int MAX_DIGITS = 5;
@@ -177,7 +177,12 @@ public class Matrix {
 
                 // Adding on the style :D
                 if (colNum == 0) {
-                    str = "| " + str + ", ";
+                    str = "| " + str;
+                     if (colNum == this.cols - 1) {
+                        str += " |";
+                     } else {
+                        str += ", ";
+                     }
                 } else if (colNum == this.cols - 1) {
                     str += " |";
                 } else {
@@ -194,6 +199,12 @@ public class Matrix {
             System.out.println();
 
         }
+
+        // Adding on another carriage return so that we can print a bunch in a row
+        System.out.println();
+
+        // Return self 
+        return this;
 
     }
 
@@ -224,19 +235,25 @@ public class Matrix {
     // The static scalar element multiplication method 
     public static Matrix elementMult(Matrix mat, double scalar) {
 
+        // The new matrix that we will be returning 
+        Matrix newMat = new Matrix();
+        newMat.rows = mat.rows;
+        newMat.cols = mat.cols;
+        newMat.data = new double[mat.rows][mat.cols];
+
         // Looping for every value in the matrix to multiply by the scalar
         for (int rowNum = 0; rowNum < mat.rows; rowNum++) {
 
             for (int colNum = 0; colNum < mat.cols; colNum++) {
 
-                mat.data[rowNum][colNum] *= scalar;
+                newMat.data[rowNum][colNum] = mat.data[rowNum][colNum] * scalar;
 
             }
 
         }
 
-        // This is not a static method, so it changes itself and returns self
-        return mat;
+        // This is a static method so no changing self
+        return newMat;
 
     }
 
@@ -421,13 +438,8 @@ public class Matrix {
 
         }
 
-        // Reassigning self
-        one.data = newMat.data;
-        one.rows = newMat.rows;
-        one.cols = newMat.cols;
-
         // Returning what we got 
-        return one;
+        return newMat;
 
     }
 
@@ -520,7 +532,7 @@ public class Matrix {
     }
 
     // The static matrix addition method
-    public Matrix add(Matrix one, Matrix two) {
+    public static Matrix add(Matrix one, Matrix two) {
 
         // Checking to make sure that they are the same size 
         if (one.rows != two.rows || one.cols != two.cols) {
@@ -557,6 +569,24 @@ public class Matrix {
 
         // Returning the new matrix
         return newMat;
+
+    }
+
+    // ----------------------------------------------Subtraction--------------------------------------------------------------------
+
+    // TODO Update subtraction to make them faster
+
+    // Element subtraction
+    public Matrix sub(double scalar) {
+
+        // The way that I will handle subtraction is to just multiply by negative 1 and then 
+        return this.add(-scalar);
+
+    }
+
+    public Matrix sub(Matrix other) {
+
+        return this.elementMult(-1).add(other).elementMult(-1);
 
     }
 
@@ -613,7 +643,7 @@ public class Matrix {
         }
 
         // Returning self;
-        return mat;
+        return newMat;
 
     }
 
@@ -652,6 +682,54 @@ public class Matrix {
         return arr;
 
     }
+
+    // A toArray method, just it returns a vector(1D array)
+    public double[] toVector() {
+
+        // We can only do this if one of the dimensions is zero, so here we check
+        if (this.rows == 1) {
+
+            // The array that we are going to return
+            double[] arr = new double[this.cols];
+
+            // Copying over the data
+            for (int i = 0; i < this.cols; i++) {
+
+                arr[i] = this.data[0][i];
+
+            }
+
+            // Returning
+            return arr;
+
+        } else if (this.cols == 1) {
+
+            // The array that we are going to return
+            double[] arr = new double[this.rows];
+
+            // Copying over the data
+            for (int i = 0; i < this.rows; i++) {
+
+                arr[i] = this.data[i][0];
+
+            }
+
+            // Returning
+            return arr;
+            
+
+        } else {
+
+            // Logging the error of their ways
+            System.out.println("The toVector method can only run for a 1D Matrix (AKA a vector).\nThis Matrix is a " + this.rows + " by " + this.cols + " Matrix, so it is not a vector.");
+            throw new Error("toVectorSizeError");
+
+        }
+
+        
+
+    }
+
 
     // A soft max function that normalizes the Matrix to percentage values less than one
     public Matrix softMax() {
@@ -740,6 +818,7 @@ public class Matrix {
         Matrix newMat = new Matrix();
         newMat.rows = mat.rows;
         newMat.cols = mat.cols;
+        newMat.data = new double[mat.rows][mat.cols];
 
         // We want to loop through the Matrix now and run each element through the function
         for (int row = 0; row < newMat.rows; row++) {
@@ -756,7 +835,7 @@ public class Matrix {
     }
 
     // This is just a blank interface so that you can create a lambda expression to pass in to the mapping function
-    interface activationFunction {
+    public interface activationFunction {
         double run(double x);
     }
 
