@@ -1,7 +1,7 @@
 # Matrix
 This is just a simple matrix math library in a couple of languages.
 ## WHY
-Yeah I know, I hated the matrices section back in high school too. So, then, why am i putting myself through this??? Well, matrices is a lot of keeping track of data which is always good and matrices are especially good because they ahve this special thing called :EMOJICODE✨Matrix Multiplication:EMOJICODE✨!!!
+Yeah I know, I hated the matrices section back in high school too. So, then, why am i putting myself through this??? Well, matrices is a lot of keeping track of data which is always good and matrices are especially good because they ahve this special thing called ✨Matrix Multiplication✨!!!
 Again, I hated matrix multiplicated in school, but it is incredibly useful because it is an efficient way to do something called multiplicitive summation. It sounds complex and stuff I know, and it what it's used for makes it sound even more complex because it's used for neural networks! BUT if you break it down, all multiplicitive sums are are just adding up stuff that you previously multiplied. Matrices are ways to hold the data in ways to make it easier to keep track of it.
 
 ## Why Multiple Languages?
